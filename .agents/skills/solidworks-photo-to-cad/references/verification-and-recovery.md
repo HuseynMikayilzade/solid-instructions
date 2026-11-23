@@ -52,14 +52,19 @@ If STEP export fails (even when `.SLDPRT` saved), report **`PARTIAL`** or **`FAI
 
 ## 4. Error Recovery Protocol
 
-### A. Desktop / Live COM Operation Failures
-1. **Identify root cause:** Inspect the active plane, sketch open/closed contour, self-intersections, selection marks, feature end condition, `Merge result` state, or zero-thickness error.
-2. **Fix the real CAD cause:**
+### A. Desktop / Live COM Operation Failures & Hang Watchdog
+1. **Automatic Watchdog Check (No Passive Waiting):** When a live SOLIDWORKS COM task runs in the background, use a `schedule` check (`TimerCondition` matching the task) so you wake up automatically if it has not finished—never leave the user having to ask why a process is stuck.
+2. **Distinguish Active Complex Work vs. True Hang (Never Static-Kill):**
+   - Inspect the flushed task log (`read_file` / `manage_task status`) and `Get-Process` (`CPU`, `MainWindowTitle`) first.
+   - **If new milestone log lines or active CPU/output progress are occurring:** The build is legitimately working on complex geometry—do **not** kill it; re-arm the `schedule` check and let it complete.
+   - **If the process is truly stalled** (empty/unchanged log across check intervals, `0` CPU hang, or a blocking modal dialog title): cancel the hung task (`manage_task kill`), terminate the hung builder `.exe` and only the `SLDWORKS.exe` PID spawned by that failed run (preserving any pre-existing user `SLDWORKS` windows), diagnose the exact stalled milestone from the flushed log, fix the script, and retry.
+3. **Identify root cause:** Inspect the active plane, sketch open/closed contour, self-intersections, selection marks, feature end condition, `Merge result` state, modal preference (`swInputDimValOnCreate`, `UserControl`), or zero-thickness error.
+4. **Fix the real CAD cause:**
    - Zero-thickness geometry → adjust coincident boundary or slight overlap/offset, or reorder feature.
    - Fillet failed → check radius < adjacent edge/wall limit, split fillet into separate features, or apply before/after conflicting cut.
    - Sketch failed to extrude/revolve → verify closed loop, remove duplicate overlapping segments, ensure revolve profile does not cross the centerline.
    - Mirror omitted side-assembly features → edit `Mirror` feature seed list to include the complete symmetric feature group.
-3. **Retry** the clean feature workflow. Never revert to stacking primitives or surface patches to work around a sketch/feature bug.
+5. **Retry** the clean feature workflow. Never revert to stacking primitives or surface patches to work around a sketch/feature bug; if repeated COM recovery fails due to environment/modal blocks, fall back cleanly to Priority 2 (complete VBA macro).
 
 ### B. VBA Macro Failures
 1. **Diagnose exact failing line/step:** Check `SelectByID2` entity name/coordinates (e.g., `"Front Plane"` vs localized plane names or coordinates off-entity), sketch state (`InsertSketch`), parameter count/types, SI unit scaling (meters vs mm), or missing template.
