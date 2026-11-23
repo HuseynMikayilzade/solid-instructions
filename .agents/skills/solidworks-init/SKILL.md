@@ -14,17 +14,20 @@ Run this workflow when setting up a new PC, initializing a target project folder
 ## Steps
 
 1. **Run the Portable Init Script:**
-   - For the current repository:
+   - **Windows:**
      ```powershell
      .\init.cmd
-     ```
-   - To initialize a separate project folder on this PC:
-     ```powershell
+     # Or initialize a new folder / install globally:
      .\init.cmd -TargetWorkspace "D:\Path\To\Project"
-     ```
-   - To install rules, skills, and slash commands globally for Antigravity, Codex, Claude Code, and Gemini CLI as well:
-     ```powershell
      .\init.cmd -Global
+     ```
+     *(If Windows blocks a downloaded ZIP script via Mark-of-the-Web, run `Unblock-File -Path .\init.cmd, .\scripts\*.ps1` or run `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-solidworks-workspace.ps1`.)*
+   - **macOS / Linux (e.g., MacBook):**
+     ```bash
+     chmod +x ./init.sh && ./init.sh
+     # Or initialize a new folder / install globally:
+     ./init.sh --target "$HOME/Projects/MyCADRepo"
+     ./init.sh --global
      ```
 2. **Inspect Readiness Output:**
    - Confirm `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.agents/skills/solidworks-photo-to-cad/`, `outputs/`, and `sources/` are in place.

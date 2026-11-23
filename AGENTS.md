@@ -170,7 +170,7 @@ If `.STEP` export fails, report **`PARTIAL`** or **`FAILED`**—never `COMPLETED
 
 ## 8. Skill, Init & Detailed Reference Modules
 
-- Initialize or check a PC/workspace anytime via `.\init.cmd` (or `.\scripts\init-solidworks-workspace.ps1`), or via the `solidworks-init` skill / `/solidworks-init` command.
+- Initialize or check a PC/workspace anytime via `.\init.cmd` (Windows) or `./init.sh` (macOS/Linux), or via the `solidworks-init` skill / `/solidworks-init` command.
 - For Photo-to-CAD tasks, load `.agents/skills/solidworks-photo-to-cad/SKILL.md` and read only the needed modules in `.agents/skills/solidworks-photo-to-cad/references/`:
   - View/photo interpretation, verticality & symmetry grouping: `photo-analysis-and-dimensions.md`
   - Instructor patterns, solid-first granularity & 16-item planning: `sketch-and-feature-standards.md`

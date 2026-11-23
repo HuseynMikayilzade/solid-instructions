@@ -15,6 +15,7 @@ SolidWorks/
 ├── GEMINI.md                                      # Gemini CLI / Antigravity entry (@./AGENTS.md)
 ├── README.md                                      # Setup & platform placement guide
 ├── init.cmd                                       # One-command Windows PC / workspace initializer
+├── init.sh                                        # One-command macOS (MacBook) / Linux initializer (Priority 2 VBA mode)
 ├── .agents/skills/
 │   ├── solidworks-init/
 │   │   └── SKILL.md                               # Portable workspace/PC init skill
@@ -78,9 +79,10 @@ If you open `c:\Users\User\Desktop\SolidWorks` directly, every supported agent d
 | **Gemini CLI** | `GEMINI.md` (imports `@./AGENTS.md`) | `.gemini/skills/solidworks-photo-to-cad/SKILL.md` |
 | **Other Agents** | Copy/paste `AGENTS.md` as system/project prompt | Attach `SKILL.md` + needed `references/` files |
 
-### 2. Quick Init on Any New PC (Recommended)
+### 2. Quick Init on Any New PC or MacBook (Recommended)
 
-After copying or cloning this folder to another Windows PC, run the one-step initializer:
+#### Windows PC
+After cloning this folder on a Windows PC, run:
 
 ```powershell
 # Check SOLIDWORKS 2026 COM, C# compiler, templates & materials on this PC:
@@ -91,6 +93,17 @@ After copying or cloning this folder to another Windows PC, run the one-step ini
 
 # Install rules, skills, and slash commands globally for Antigravity, Codex, Claude Code, and Gemini CLI:
 .\init.cmd -Global
+```
+*(If downloaded as a browser ZIP instead of `git clone`, Windows SmartScreen may block `.cmd`/`.ps1` files until you run `Unblock-File -Path .\init.cmd, .\scripts\*.ps1`.)*
+
+#### MacBook (macOS) / Linux
+SOLIDWORKS Desktop/COM is Windows-only, so macOS operates in **Priority 2 (standalone SOLIDWORKS 2026 VBA `.bas` macro + manual guide)**:
+
+```bash
+chmod +x ./init.sh
+./init.sh                 # Check environment & activate Priority 2 VBA mode
+./init.sh --global        # Install rules, skills, and slash commands globally
+./init.sh --target ~/CAD  # Initialize a new project folder
 ```
 
 Inside **Claude Code**, **Gemini CLI**, **Codex**, or **Antigravity**, you can also run **`/solidworks-init`** (or invoke the `solidworks-init` skill) to verify the PC environment and enforce `AGENTS.md` guidelines, and **`/solidworks-cad <part>`** to model a part directly.

@@ -1,7 +1,7 @@
 description = "Initialize and verify the SOLIDWORKS Human-Like CAD workspace and guidelines on this PC"
 prompt = """
 Initialize and verify the SOLIDWORKS Human-Like CAD environment for this workspace (args: {{args}}).
-1. Run `.\init.cmd` (pass `-TargetWorkspace "{{args}}"` if a target folder path was given, or `-Global` if global setup was requested).
+1. On Windows run `.\init.cmd` (or `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\init-solidworks-workspace.ps1`); on macOS/Linux run `bash ./init.sh` (pass `-TargetWorkspace` / `--target` or `-Global` / `--global` if requested in `{{args}}`).
 2. Read `AGENTS.md` and `.agents/skills/solidworks-photo-to-cad/SKILL.md` so all guidelines are loaded.
 3. Report SOLIDWORKS 2026 COM / C# / template / material readiness and confirm the workspace is ready to model parts strictly per `AGENTS.md`.
 """
