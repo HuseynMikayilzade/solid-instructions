@@ -29,7 +29,9 @@ $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $SkillName = "solidworks-photo-to-cad"
+$InitSkillName = "solidworks-init"
 $CanonicalSkillDir = Join-Path $RepoRoot ".agents\skills\$SkillName"
+$CanonicalInitSkillDir = Join-Path $RepoRoot ".agents\skills\$InitSkillName"
 $CanonicalRefsDir = Join-Path $CanonicalSkillDir "references"
 $AgentsFile = Join-Path $RepoRoot "AGENTS.md"
 
@@ -74,8 +76,23 @@ if ($Platform -eq "workspace") {
     Copy-FileSafe -Source (Join-Path $RepoRoot "CLAUDE.md") -Destination (Join-Path $TargetWorkspace "CLAUDE.md") -AllowOverwrite $Force
     Copy-FileSafe -Source (Join-Path $RepoRoot "GEMINI.md") -Destination (Join-Path $TargetWorkspace "GEMINI.md") -AllowOverwrite $Force
     Install-SkillBundle -SkillEntryFile (Join-Path $CanonicalSkillDir "SKILL.md") -DestSkillDir (Join-Path $TargetWorkspace ".agents\skills\$SkillName")
+    if (Test-Path $CanonicalInitSkillDir) {
+        Copy-FileSafe -Source (Join-Path $CanonicalInitSkillDir "SKILL.md") -Destination (Join-Path $TargetWorkspace ".agents\skills\$InitSkillName\SKILL.md") -AllowOverwrite $true
+    }
     Copy-FileSafe -Source (Join-Path $RepoRoot ".claude\skills\$SkillName\SKILL.md") -Destination (Join-Path $TargetWorkspace ".claude\skills\$SkillName\SKILL.md") -AllowOverwrite $true
     Copy-FileSafe -Source (Join-Path $RepoRoot ".gemini\skills\$SkillName\SKILL.md") -Destination (Join-Path $TargetWorkspace ".gemini\skills\$SkillName\SKILL.md") -AllowOverwrite $true
+    foreach ($cmdFile in @("solidworks-init.md", "solidworks-cad.md")) {
+        $srcCmd = Join-Path $RepoRoot ".claude\commands\$cmdFile"
+        if (Test-Path $srcCmd) {
+            Copy-FileSafe -Source $srcCmd -Destination (Join-Path $TargetWorkspace ".claude\commands\$cmdFile") -AllowOverwrite $true
+        }
+    }
+    foreach ($cmdFile in @("solidworks-init.toml", "solidworks-cad.toml")) {
+        $srcCmd = Join-Path $RepoRoot ".gemini\commands\$cmdFile"
+        if (Test-Path $srcCmd) {
+            Copy-FileSafe -Source $srcCmd -Destination (Join-Path $TargetWorkspace ".gemini\commands\$cmdFile") -AllowOverwrite $true
+        }
+    }
     exit 0
 }
 
@@ -84,6 +101,9 @@ $HomeDir = $env:USERPROFILE
 if ($Platform -in @("all", "antigravity")) {
     $agConfig = Join-Path $HomeDir ".gemini\config"
     Install-SkillBundle -SkillEntryFile (Join-Path $CanonicalSkillDir "SKILL.md") -DestSkillDir (Join-Path $agConfig "skills\$SkillName")
+    if (Test-Path $CanonicalInitSkillDir) {
+        Copy-FileSafe -Source (Join-Path $CanonicalInitSkillDir "SKILL.md") -Destination (Join-Path $agConfig "skills\$InitSkillName\SKILL.md") -AllowOverwrite $true
+    }
     Copy-FileSafe -Source $AgentsFile -Destination (Join-Path $agConfig "rules\solidworks-cad-agent.md") -AllowOverwrite $Force
 }
 
@@ -91,16 +111,31 @@ if ($Platform -in @("all", "codex")) {
     $codexDir = Join-Path $HomeDir ".codex"
     Copy-FileSafe -Source $AgentsFile -Destination (Join-Path $codexDir "AGENTS.md") -AllowOverwrite $Force
     Install-SkillBundle -SkillEntryFile (Join-Path $CanonicalSkillDir "SKILL.md") -DestSkillDir (Join-Path $codexDir "skills\$SkillName")
+    if (Test-Path $CanonicalInitSkillDir) {
+        Copy-FileSafe -Source (Join-Path $CanonicalInitSkillDir "SKILL.md") -Destination (Join-Path $codexDir "skills\$InitSkillName\SKILL.md") -AllowOverwrite $true
+    }
 }
 
 if ($Platform -in @("all", "claude")) {
     $claudeDir = Join-Path $HomeDir ".claude"
     Copy-FileSafe -Source $AgentsFile -Destination (Join-Path $claudeDir "CLAUDE.md") -AllowOverwrite $Force
     Install-SkillBundle -SkillEntryFile (Join-Path $RepoRoot ".claude\skills\$SkillName\SKILL.md") -DestSkillDir (Join-Path $claudeDir "skills\$SkillName")
+    foreach ($cmdFile in @("solidworks-init.md", "solidworks-cad.md")) {
+        $srcCmd = Join-Path $RepoRoot ".claude\commands\$cmdFile"
+        if (Test-Path $srcCmd) {
+            Copy-FileSafe -Source $srcCmd -Destination (Join-Path $claudeDir "commands\$cmdFile") -AllowOverwrite $true
+        }
+    }
 }
 
 if ($Platform -in @("all", "gemini")) {
     $geminiDir = Join-Path $HomeDir ".gemini"
     Copy-FileSafe -Source $AgentsFile -Destination (Join-Path $geminiDir "GEMINI.md") -AllowOverwrite $Force
     Install-SkillBundle -SkillEntryFile (Join-Path $RepoRoot ".gemini\skills\$SkillName\SKILL.md") -DestSkillDir (Join-Path $geminiDir "skills\$SkillName")
+    foreach ($cmdFile in @("solidworks-init.toml", "solidworks-cad.toml")) {
+        $srcCmd = Join-Path $RepoRoot ".gemini\commands\$cmdFile"
+        if (Test-Path $srcCmd) {
+            Copy-FileSafe -Source $srcCmd -Destination (Join-Path $geminiDir "commands\$cmdFile") -AllowOverwrite $true
+        }
+    }
 }

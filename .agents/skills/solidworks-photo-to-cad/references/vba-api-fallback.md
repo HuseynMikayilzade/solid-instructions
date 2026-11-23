@@ -84,9 +84,18 @@ Set swFeat = swFeatMgr.CreateFeature(swData)
 
 ---
 
+### `SketchAddConstraints` & Feature Selection Pitfalls (SOLIDWORKS 2026 Verified)
+- **`"sgCOLINEAR"`** uses **one `L`** (not `"sgCOLLINEAR"`).
+- Point-to-point alignment uses **`"sgHORIZONTALPOINTS2D"`** / **`"sgVERTICALPOINTS2D"`**.
+- Always select the sketch before `FeatureExtrusion3`/`FeatureCut4` (e.g., `swModel.FeatureByPositionReverse(0).Select2 False, 0`).
+- Use `InsertFeatureChamfer` on pre-selected edges when `CreateDefinition(swFmChamfer)` returns `Nothing`.
+- For visual parity with instructor models (Tier 3): apply `"Plain Carbon Steel"` via `swPart.SetMaterialPropertyName2` (when available) and set `swModel.ActiveView.DisplayMode = swViewDisplayMode_e.swViewDisplayMode_ShadedWithEdges`.
+
+---
+
 ## 3. Useful Sketch Constraint Names (`SketchAddConstraints`)
-- `"sgHORIZONTAL2D"`, `"sgVERTICAL2D"`
-- `"sgCOINCIDENT"`, `"sgCONCENTRIC"`, `"sgTANGENT"`
+- `"sgHORIZONTAL2D"`, `"sgVERTICAL2D"`, `"sgHORIZONTALPOINTS2D"`, `"sgVERTICALPOINTS2D"`
+- `"sgCOINCIDENT"`, `"sgCONCENTRIC"`, `"sgTANGENT"`, `"sgCOLINEAR"`
 - `"sgPARALLEL"`, `"sgPERPENDICULAR"`, `"sgEQUAL"`
 - `"sgSYMMETRIC"` (select 2 entities + 1 centerline), `"sgMIDPOINT"`
 

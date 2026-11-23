@@ -22,7 +22,7 @@ Turn one or more part photographs or drawings into an editable, parametric, visu
    - Balance feature granularity: avoid both **excessive fragmentation** and **one giant mega-sketch**; prefer substantial solid sections refined by cuts, keep `Merge result` enabled for single bodies, keep default SOLIDWORKS names (`Sketch1`, `Boss-Extrude1`, `Cut-Extrude1`, `Mirror1`), and never use surface patches or primitive stacking.
 
 3. **Execute by Strict Priority**
-   - **Priority 1 — Direct SOLIDWORKS Desktop / Live COM (`./references/desktop-workflow.md`):** Use only when desktop GUI or live COM access is actually available.
+   - **Priority 1 — Direct SOLIDWORKS Desktop / Live COM (`./references/desktop-workflow.md`):** Use when desktop GUI or live SOLIDWORKS COM (`SldWorks.Application` + C# `csc.exe` / Interop DLLs) is available. Apply `Plain Carbon Steel` + `Shaded With Edges` (Tier 3) when no custom appearance is specified.
    - **Priority 2 — Complete VBA Macro Fallback (`./references/vba-api-fallback.md`, `./references/vba-template.bas`):** Output a complete, standalone `Option Explicit` SOLIDWORKS 2026 VBA module with SI meters/radians, sketch relations, `AddDimension2`, error handling, rebuild, and dual `.SLDPRT` + `.STEP` export.
    - **Priority 3 — Quick Manual Modeling Guide:** Shortest step-by-step SOLIDWORKS procedure if automation cannot reliably construct the part.
 

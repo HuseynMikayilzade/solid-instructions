@@ -8,7 +8,7 @@ Your primary goal is to reconstruct mechanical parts from user-provided photogra
 
 ## 1. Source-Based Methodology Hierarchy
 
-Primary methodology source: `C:\Users\User\Downloads\CAD-CAE-CAM-Serbest-Ish-2026.docx` (*CAD/CAM/CAE tətbiqləri — Sərbəst işlər*, SOLIDWORKS 2021).
+Primary methodology source: `sources/CAD-CAE-CAM-Serbest-Ish-2026.docx` (*CAD/CAM/CAE tətbiqləri — Sərbəst işlər*, SOLIDWORKS 2021).
 
 Follow this strict three-tier hierarchy and **never attribute supplemental Tier 3 engineering rules to the instructor**:
 
@@ -25,7 +25,7 @@ Follow this strict three-tier hierarchy and **never attribute supplemental Tier 
    - Maintain a compact, logical feature tree (e.g., `Sİ 2` completes a stepped, notched, slotted, lugged, bored bracket in 5 sketches/features) and sketch `Normal To` faces with `Horizontal`/`Vertical` constraints to keep walls straight.
 3. **Tier 3 (`NOT SPECIFIED` / Supplemental Engineering Rules) — Applied Only Where Instructor Material Does Not Contradict:**
    - 3D feature-level `Mirror` (`Mirror1`) and feature `Linear`/`Circular Pattern`; `Hole Wizard`, `Shell`, `Rib`, `Loft`, `Sweep`.
-   - Photo-to-CAD optical/perspective correction, vertical geometry protection against camera distortion, dimension classification tags, VBA macro automation, `.STEP` export, and versioned `outputs/` management.
+   - Photo-to-CAD optical/perspective correction, vertical geometry protection against camera distortion, dimension classification tags, live C#/COM or VBA macro automation, `.STEP` export, versioned `outputs/` management, and instructor-matching display defaults (`Plain Carbon Steel` material + `Shaded With Edges` view mode when no specific material is specified).
 
 ---
 
@@ -168,11 +168,12 @@ If `.STEP` export fails, report **`PARTIAL`** or **`FAILED`**—never `COMPLETED
 
 ---
 
-## 8. Skill & Detailed Reference Modules
+## 8. Skill, Init & Detailed Reference Modules
 
-For Photo-to-CAD tasks, load `.agents/skills/solidworks-photo-to-cad/SKILL.md` and read only the needed modules in `.agents/skills/solidworks-photo-to-cad/references/`:
-- View/photo interpretation, verticality & symmetry grouping: `photo-analysis-and-dimensions.md`
-- Instructor patterns, solid-first granularity & 16-item planning: `sketch-and-feature-standards.md`
-- Interactive desktop / live COM workflow: `desktop-workflow.md`
-- SOLIDWORKS 2026 VBA/API fallback & template: `vba-api-fallback.md`, `vba-template.bas`
-- Verification & error recovery: `verification-and-recovery.md`
+- Initialize or check a PC/workspace anytime via `.\init.cmd` (or `.\scripts\init-solidworks-workspace.ps1`), or via the `solidworks-init` skill / `/solidworks-init` command.
+- For Photo-to-CAD tasks, load `.agents/skills/solidworks-photo-to-cad/SKILL.md` and read only the needed modules in `.agents/skills/solidworks-photo-to-cad/references/`:
+  - View/photo interpretation, verticality & symmetry grouping: `photo-analysis-and-dimensions.md`
+  - Instructor patterns, solid-first granularity & 16-item planning: `sketch-and-feature-standards.md`
+  - Interactive desktop / live C# COM workflow: `desktop-workflow.md`
+  - SOLIDWORKS 2026 VBA/API fallback & template: `vba-api-fallback.md`, `vba-template.bas`
+  - Verification & error recovery: `verification-and-recovery.md`

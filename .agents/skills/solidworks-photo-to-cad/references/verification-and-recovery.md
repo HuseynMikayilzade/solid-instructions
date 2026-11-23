@@ -11,7 +11,8 @@ Verify whenever live execution permits (explicitly mark anything not executed as
 - **Sketch validity:** Closed contours where required, no zero-length or self-intersecting edges, critical geometry fully constrained via relations + Smart Dimensions (black sketch status).
 - **Solid body count & merge check:** `1` solid body for a single machined/molded/cast component (`GetBodies2(swSolidBody, True)`), confirming `Merge result` succeeded. Unexpected multi-body results indicate a disjoint boss or incomplete cut (only justified for intentional multi-body FEA parts like `Sİ 9`).
 - **Overall dimensions / bounding box:** Verify `L × W × H` (`GetPartBox`) matches the dimension map.
-- **Volume & mass:** Sanity-check `GetMassProperties2` / `CreateMassProperty2` (positive volume, plausible mass).
+- **Volume & mass:** Sanity-check `GetMassProperties2` / `CreateMassProperty2` (avoid obsolete `GetMassProperties`), and cross-check SOLIDWORKS `Volume` against analytical geometry calculation when dimensions are fully confirmed.
+- **Appearance & display (Tier 3):** Confirm `Shaded With Edges` (`swViewDisplayMode_ShadedWithEdges`) and `Plain Carbon Steel` (when no custom material is specified) so edges and faces match the instructor's visual contrast.
 - **Feature tree quality:** Balanced granularity (neither overly fragmented into micro-features nor crammed into one mega-sketch), solid-first native features (no surface-based main-body approximations or primitive stacking), and default SOLIDWORKS single-part naming (`Sketch1`, `Boss-Extrude1`, `Cut-Extrude1`, `Mirror1`, etc.).
 - **Complete Physical Symmetry Check:**
   - **The presence of a `Mirror` feature in the FeatureManager tree is NOT proof of correct symmetry.**

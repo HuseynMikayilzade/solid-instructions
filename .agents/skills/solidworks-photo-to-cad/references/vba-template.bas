@@ -51,6 +51,9 @@ Sub main()
     errStep = "Build Parametric Sketches and Features"
     BuildPartFeatures swModel, swFeatMgr, swSketchMgr, errStep
 
+    ' Apply instructor-matching steel tone & Shaded With Edges (Tier 3 visual default)
+    ApplyDefaultAppearance swApp, swModel, swPart
+
     errStep = "Rebuild Model"
     If Not swModel.ForceRebuild3(False) Then
         Err.Raise vbObjectError + 1003, "main", "ForceRebuild3 reported rebuild failure."
@@ -306,4 +309,25 @@ Private Sub SavePartSafe(ByVal swModel As SldWorks.ModelDoc2, ByVal filePath As 
     If Not ok Then
         Err.Raise vbObjectError + 5001, "SavePartSafe", "Save failed (errors=" & errs & ", warnings=" & warns & ") at: " & filePath
     End If
+End Sub
+
+' -----------------------------------------------------------------------------
+' Helper: Apply Plain Carbon Steel + Shaded With Edges when available (Tier 3)
+' -----------------------------------------------------------------------------
+Private Sub ApplyDefaultAppearance(ByVal swApp As SldWorks.SldWorks, ByVal swModel As SldWorks.ModelDoc2, ByVal swPart As SldWorks.PartDoc)
+    On Error Resume Next
+    Dim exeDir As String
+    Dim matDb As String
+    Dim mv As SldWorks.ModelView
+    exeDir = swApp.GetExecutablePath()
+    If Len(exeDir) > 0 And Right$(exeDir, 1) <> "\" Then exeDir = exeDir & "\"
+    matDb = exeDir & "lang\english\sldmaterials\solidworks materials.sldmat"
+    If FileExistsSafe(matDb) Then
+        swPart.SetMaterialPropertyName2 "", matDb, "Plain Carbon Steel"
+    End If
+    Set mv = swModel.ActiveView
+    If Not mv Is Nothing Then
+        mv.DisplayMode = swViewDisplayMode_e.swViewDisplayMode_ShadedWithEdges
+    End If
+    On Error GoTo 0
 End Sub

@@ -29,8 +29,23 @@ When operating SOLIDWORKS 2026 interactively:
 
 ## 2. Direct Local COM/API Automation (When Scripting Live SOLIDWORKS)
 
-If desktop GUI clicks are unavailable or slower than COM scripting, and local Python/PowerShell can attach to `SldWorks.Application` on Windows:
+If desktop GUI clicks are unavailable or slower than COM scripting, and Windows has SOLIDWORKS 2026 installed (`SldWorks.Application` ProgID registered):
 - Complete the 16-item pre-modeling plan first and follow the exact same solid-first, balanced-granularity, Smart-Dimensioned, native-feature rules as `./vba-api-fallback.md`.
-- Keep `Merge = True` for single-body parts, run `ForceRebuild3(False)`, verify solid body count (`GetBodies2`), bounding box (`GetPartBox`), physical symmetry, and vertical wall integrity.
-- Save both `Part_XX_vNNN.SLDPRT` and `Part_XX_vNNN.STEP` into `outputs/Part_XX/vNNN/` (never overwriting completed versions) and update `outputs/Part_XX/README.md`.
+- **Preferred Execution Engine on Windows (Zero Python `win32com` Dependency):** Compile a lightweight x64 C# builder using `.NET Framework 4.x csc.exe` (`C:\Windows\Microsoft.NET\Framework64\v4.0*\csc.exe`) referencing `SolidWorks.Interop.sldworks.dll` and `SolidWorks.Interop.swconst.dll` from `C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\api\redist\`.
+- **Verified SOLIDWORKS 2026 API Rules (Language-Independent):**
+  1. **Standard Planes & Origin:** Locate `Front`, `Top`, `Right` by iterating `FirstFeature()` for `GetTypeName2() == "RefPlane"` (`1=Front`, `2=Top`, `3=Right`) rather than localized plane names; select Origin via `Extension.SelectByID2("", "EXTSKETCHPOINT", 0, 0, 0, ...)`.
+  2. **Planar-Face Sketch Coordinates:** Always convert 3D model `(X, Y, Z)` coordinates to local sketch `(u, v)` via `ISketch.ModelToSketchTransform` so face-orientation flips never break sketch geometry.
+  3. **Verified Constraint Strings (`SketchAddConstraints`):**
+     - Collinear is spelled **`"sgCOLINEAR"`** (single `L` — `"sgCOLLINEAR"` silently fails).
+     - Point-to-point horizontal/vertical alignment uses **`"sgHORIZONTALPOINTS2D"`** / **`"sgVERTICALPOINTS2D"`**.
+     - Always verify `(swConstrainedStatus_e)sk.GetConstrainedStatus()` after adding relations & `AddDimension2` + `SetSystemValue3`.
+  4. **Extrude / Cut Selection & Direction:** Right after `skMgr.InsertSketch(true)`, select the just-closed sketch via `((IFeature)model.FeatureByPositionReverse(0)).Select2(false, 0)` before calling `FeatureExtrusion3` or `FeatureCut4`:
+     - In `FeatureExtrusion3(Sd, Flip, Dir, ...)`, **`Dir`** reverses extrude direction (`true` = opposite face normal).
+     - In `FeatureCut4(Sd, Flip, Dir, ...)`, **`Flip`** is **`Flip side to cut`** (cuts outside the closed contour per `Sİ 4, 5`).
+  5. **Chamfers & Tangent Reference Planes (`Sİ 5`):**
+     - Use `featMgr.InsertFeatureChamfer((int)swFeatureChamferOption_e.swFeatureChamferTangentPropagation, (int)swChamferType_e.swChamferAngleDistance, dist, angleRad, ...)` on pre-selected edges (`CreateDefinition(swFmChamfer)` may return `null`).
+     - For tangent planes (`Sİ 5`), select `Top Plane` **First** (`swRefPlaneReferenceConstraint_Parallel`) and the cylindrical face **Second** (`swRefPlaneReferenceConstraint_Tangent`), then verify `IRefPlane.Transform` sign (with `Distance` offset fallback if needed).
+  6. **Instructor-Matching Appearance & Display (Tier 3):** When no custom material/color is specified, apply **`Plain Carbon Steel`** (`C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\lang\english\sldmaterials\solidworks materials.sldmat`) via `part.SetMaterialPropertyName2` and set `model.ActiveView.DisplayMode = (int)swViewDisplayMode_e.swViewDisplayMode_ShadedWithEdges` before capturing multi-view verification renders and saving.
+- Keep `Merge = True` for single-body parts, run `ForceRebuild3(False)`, verify solid body count (`GetBodies2`), bounding box (`GetPartBox`), `CoM` physical symmetry, and analytical volume.
+- Save both `Part_XX_vNNN.SLDPRT` and `Part_XX_vNNN.STEP` into `outputs/Part_XX/vNNN/` (never overwriting completed versions), verify SLDPRT reopen + `ForceRebuild3`, and update `outputs/Part_XX/README.md`.
 - If COM instantiation fails (SOLIDWORKS not installed, modal dialog, COM registration error), stop guessing and fall back cleanly to Priority 2 (complete VBA macro).

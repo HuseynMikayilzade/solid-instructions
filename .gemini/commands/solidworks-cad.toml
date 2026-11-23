@@ -1,0 +1,7 @@
+description = "Model a mechanical part in SOLIDWORKS 2026 strictly following AGENTS.md and instructor methodology"
+prompt = """
+Model the requested part ({{args}}) into a parametric SOLIDWORKS 2026 solid model following `AGENTS.md` and `.agents/skills/solidworks-photo-to-cad/SKILL.md`:
+1. Follow the 3-tier instructor methodology (`sources/CAD-CAE-CAM-Serbest-Ish-2026.docx`) and complete the 16-item pre-modeling plan first.
+2. Execute via Priority 1 (live SOLIDWORKS 2026 COM/C# with `Plain Carbon Steel` and `Shaded With Edges`) or Priority 2 (standalone VBA macro).
+3. Verify `ForceRebuild3`, `1` solid body, bounding box, `CoM` symmetry, and multi-view renders, then save `outputs/Part_XX/vNNN/Part_XX_vNNN.SLDPRT` + `.STEP` and respond in the 6-section format.
+"""

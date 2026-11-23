@@ -14,26 +14,41 @@ SolidWorks/
 ├── CLAUDE.md                                      # Claude Code entry (@./AGENTS.md)
 ├── GEMINI.md                                      # Gemini CLI / Antigravity entry (@./AGENTS.md)
 ├── README.md                                      # Setup & platform placement guide
-├── .agents/skills/solidworks-photo-to-cad/
-│   ├── SKILL.md                                   # Canonical Photo-to-CAD skill (Antigravity & Codex)
-│   └── references/
-│       ├── photo-analysis-and-dimensions.md       # View priority, verticality protection, symmetry groups, dimension tags
-│       ├── sketch-and-feature-standards.md        # Instructor patterns, solid-first granularity, 16-item planning, tree order
-│       ├── desktop-workflow.md                    # Priority 1: interactive SOLIDWORKS / live COM workflow
-│       ├── vba-api-fallback.md                    # Priority 2: SOLIDWORKS 2026 VBA API standards & signatures
-│       ├── vba-template.bas                       # Reusable Option Explicit VBA macro scaffold
-│       └── verification-and-recovery.md           # Physical symmetry, verticality, visual + geometric checks, recovery
-├── .claude/skills/solidworks-photo-to-cad/
-│   └── SKILL.md                                   # Claude Code skill entrypoint
-├── .gemini/skills/solidworks-photo-to-cad/
-│   └── SKILL.md                                   # Gemini CLI skill entrypoint
+├── init.cmd                                       # One-command Windows PC / workspace initializer
+├── .agents/skills/
+│   ├── solidworks-init/
+│   │   └── SKILL.md                               # Portable workspace/PC init skill
+│   └── solidworks-photo-to-cad/
+│       ├── SKILL.md                               # Canonical Photo-to-CAD skill (Antigravity & Codex)
+│       └── references/
+│           ├── photo-analysis-and-dimensions.md   # View priority, verticality protection, symmetry groups, dimension tags
+│           ├── sketch-and-feature-standards.md    # Instructor patterns, solid-first granularity, 16-item planning, tree order
+│           ├── desktop-workflow.md                # Priority 1: interactive SOLIDWORKS / live C# COM workflow
+│           ├── vba-api-fallback.md                # Priority 2: SOLIDWORKS 2026 VBA API standards & signatures
+│           ├── vba-template.bas                   # Reusable Option Explicit VBA macro scaffold
+│           └── verification-and-recovery.md       # Physical symmetry, verticality, visual + geometric checks, recovery
+├── .claude/
+│   ├── commands/
+│   │   ├── solidworks-init.md                     # /solidworks-init command (Claude Code)
+│   │   └── solidworks-cad.md                      # /solidworks-cad command (Claude Code)
+│   └── skills/solidworks-photo-to-cad/
+│       └── SKILL.md                               # Claude Code skill entrypoint
+├── .gemini/
+│   ├── commands/
+│   │   ├── solidworks-init.toml                   # /solidworks-init command (Gemini CLI)
+│   │   └── solidworks-cad.toml                    # /solidworks-cad command (Gemini CLI)
+│   └── skills/solidworks-photo-to-cad/
+│       └── SKILL.md                               # Gemini CLI skill entrypoint
 ├── outputs/                                       # Versioned CAD task outputs (created per CAD task)
 │   └── Part_XX/
 │       ├── README.md                              # Lightweight task status & latest version summary
 │       └── vNNN/
 │           ├── Part_XX_vNNN.SLDPRT                # Mandatory native SOLIDWORKS 2026 part
 │           └── Part_XX_vNNN.STEP                  # Mandatory exported STEP model
+├── sources/
+│   └── CAD-CAE-CAM-Serbest-Ish-2026.docx          # Instructor methodology & task source
 └── scripts/
+    ├── init-solidworks-workspace.ps1              # Environment checker & workspace/global init script
     └── install-solidworks-agent.ps1               # Windows installer for global or workspace deployment
 ```
 
@@ -63,7 +78,24 @@ If you open `c:\Users\User\Desktop\SolidWorks` directly, every supported agent d
 | **Gemini CLI** | `GEMINI.md` (imports `@./AGENTS.md`) | `.gemini/skills/solidworks-photo-to-cad/SKILL.md` |
 | **Other Agents** | Copy/paste `AGENTS.md` as system/project prompt | Attach `SKILL.md` + needed `references/` files |
 
-### 2. Installing Globally or Into Another Project (Windows PowerShell)
+### 2. Quick Init on Any New PC (Recommended)
+
+After copying or cloning this folder to another Windows PC, run the one-step initializer:
+
+```powershell
+# Check SOLIDWORKS 2026 COM, C# compiler, templates & materials on this PC:
+.\init.cmd
+
+# Initialize a brand-new project folder on that PC with all rules, skills, commands, and sources/:
+.\init.cmd -TargetWorkspace "D:\Projects\MyCADRepo"
+
+# Install rules, skills, and slash commands globally for Antigravity, Codex, Claude Code, and Gemini CLI:
+.\init.cmd -Global
+```
+
+Inside **Claude Code**, **Gemini CLI**, **Codex**, or **Antigravity**, you can also run **`/solidworks-init`** (or invoke the `solidworks-init` skill) to verify the PC environment and enforce `AGENTS.md` guidelines, and **`/solidworks-cad <part>`** to model a part directly.
+
+### 3. Installing Globally or Into Another Project (`install-solidworks-agent.ps1`)
 
 Preview first with `-DryRun`:
 ```powershell
